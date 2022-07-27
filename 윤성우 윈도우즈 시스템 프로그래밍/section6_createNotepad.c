@@ -35,9 +35,9 @@ int _tmain(int argc, TCHAR* argv[]){
     );   //CreateProcess
 
     if(state!=0)
-		_fputts(_T("Create OK! \n"), stdout);
-	else
-		_fputts(_T("Create Error! \n"), stdout);
+	_fputts(_T("Create OK! \n"), stdout);
+    else
+	_fputts(_T("Create Error! \n"), stdout);
 
-	return 0;
+    return 0;
 }
