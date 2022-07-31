@@ -1,0 +1,174 @@
+// 명령 프롬프트 제작
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <tchar.h>
+#include <locale.h>
+#include <windows.h> 
+#include <ctype.h>	//_istupper, _totlower 를 위함
+/*
+	undefined reference to `wWinMain@16' 오류가 나는 경우
+	해당 컴퓨터의 MinGW파일에서 UNICODE의 일부를 지원되지 않아 발생.
+	MinGW에 추가적으로 파일 저장 필요, include 필요
+	저장할 파일 출처 : https://github.com/coderforlife/mingw-unicode-main/blob/master/mingw-unicode.c  
+*/
+#include "mingw-unicode.c"
+
+#define STR_LEN    256
+#define CMD_TOKEN_NUM  10
+#define DIR_LEN MAX_PATH+1      //정보가 저장될 메모리 버퍼의 크기
+
+TCHAR ERROR_CMD[] 
+ = _T("'%s' is not an executable program. \n");
+
+int CmdProcessing(void);
+TCHAR * StrLower(TCHAR *);
+
+
+int _tmain(int agrc, TCHAR * argv[])
+{
+	// 한글 입력을 가능하게 하기 위해
+	_tsetlocale(LC_ALL, _T("korean"));	
+	
+	DWORD isExit;
+	while(1)
+	{
+		isExit = CmdProcessing();
+		if(isExit == TRUE)
+		{
+			_fputts(_T("Exit command processing \n"), stdout );
+			break;
+		}
+	}
+
+	return 0; 
+}
+
+
+TCHAR cmdString[STR_LEN];
+TCHAR cmdTokenList[CMD_TOKEN_NUM][STR_LEN];
+TCHAR seps[]   = _T(" ,\t\n");
+
+
+/***************************************************
+ * 함수 : TCHAR int CmdProcessing(void)
+ * 기능 : 명령어를 입력받아서 해당 명령어에 지정되어 있는 기능을 수행한다.
+ * 		  exit가 입력되면 TRUE를 반환하고 이는 프로그램의 종료로 이어진다.
+*************************************************/
+
+int CmdProcessing(void)
+{
+	//********문자열 입력받고 특정 문자열을 기준으로 나눠 배열에 따로 넣기**************
+	_fputts( _T("Best command prompt>> "), stdout );		//출력
+	_getts(cmdString);		//입력
+
+	TCHAR * token = _tcstok(cmdString, seps);		//특정 문자열을 찾아 \0로 변경 
+
+	int tokenNum = 0;
+	while(token != NULL)
+	{
+		_tcscpy (cmdTokenList[tokenNum++], StrLower(token));	//token의 \0 이전 내용을 cmdTokenList[tokenNum++]에 덮어씀
+		token = _tcstok(NULL, seps);	//\0으로 바꿨던 그 주소부터 다시 구분자 찾아 \0으로 변경
+	}
+	//***************************************************************************
+	
+	if( !_tcscmp(cmdTokenList[0],_T("exit")) )
+	{
+		return TRUE;
+	}
+	else if ( !_tcscmp(cmdTokenList[0],_T("echo")) )
+	{
+		_tprintf(_T("it is echo \n"));
+	}
+	else if ( !_tcscmp(cmdTokenList[0],_T("start")) )
+	{
+		if(tokenNum>1){
+			if ( !_tcscmp(cmdTokenList[0],_T("echo")) )
+
+		}
+		else{
+
+		}
+		// _tprintf(_T("it is start \n"));
+		// STARTUPINFO si = {0, };     //STARTUPINFO 구조체 초기화 
+		// PROCESS_INFORMATION pi;      //PROCESS_INFOMATION 구조체 선언 
+		// si.cb = sizeof(si);
+		// BOOL isRun = CreateProcess(		
+		// 				NULL,     //생성할 프로세스명 or 경로, NULL이면 현 디렉터리에서 찾음
+		// 				CmdProject.exe,	//위가 NULL이면 이번 값을 통해 생성할 프로세스 이름과 인자까지 함께 전달가능, 문자열불가, 변수만 가능
+		// 				NULL,
+		// 				NULL, 
+		// 				TRUE, 
+		// 				0,
+		// 				NULL, 
+		// 				NULL, 
+		// 				&si, 	//STARTUPINFO 구조체 변수의 주소값
+		// 				&pi		//LPPROCESS_INFORMATION 구조체 변수의 주소값
+		// );   //CreateProcess
+
+		// CloseHandle(pi.hProcess);	//현 프로세스의 handle table에서 해당 프로세스의 핸들을 삭제하는 함수
+		// CloseHandle(pi.hThread);	//해당 프로세스의 thread 핸들을 삭제하는 함수
+
+	}
+	else		//생소한 명령어 입력하는 경우 표준 검색경로에 존재하는 실행파일로 간주
+	{
+		// Section 6 명령 프롬프트 프로젝트 기능 추가
+
+		STARTUPINFO si = {0, };     //STARTUPINFO 구조체 초기화 
+		PROCESS_INFORMATION pi;      //PROCESS_INFOMATION 구조체 선언 
+
+		//*****************STARTUPINFO 구조체 속성 지정********************
+		si.cb = sizeof(si);     //STARTUPINFO 구조체 변수의 크기. 업그레이드 버전과 그 전 버전을 구분하기 위함
+		//si.dwFlags=STARTF_USEPOSITION|STARTF_USESIZE;	//si 구조체 변수에 설정된 값중 반영하려 하는 멤버들의 정보
+		//si.dwX=100;		//화면 좌상단 기준으로 값만큼 떨어진 위치에서 프로세스 출력
+		//si.dwY=200;		//화면 좌상단 기준으로 값만큼 떨어진 위치에서 프로세스 출력
+		//si.dwXSize=300;		//size 설정
+		//si.dwYSize=200;		//size 설정
+		//si.lpTitle=_T("I am a boy!");	//콘솔 윈도우의 타이틀 바 제목
+		//******************************************************************
+		
+		// TCHAR cDir[DIR_LEN];       //메모리 버퍼
+		// SetCurrentDirectory("C:\\WINDOWS\\system32");       //시스템 디렉터리(표준 검색경로)로 경로 수정
+		// GetCurrentDirectory(DIR_LEN, cDir);     //현 디렉토리 위치 확인. (인수 : (정보가 저장될 메모리버퍼의 크기, 메모리 버퍼의 포인터))
+
+		BOOL isRun = CreateProcess(		
+						NULL,     //생성할 프로세스명 or 경로, NULL이면 현 디렉터리에서 찾음
+						cmdTokenList[0],	//위가 NULL이면 이번 값을 통해 생성할 프로세스 이름과 인자까지 함께 전달가능, 문자열불가, 변수만 가능
+						NULL,
+						NULL, 
+						TRUE, 
+						0,
+						NULL, 
+						NULL, 
+						&si, 	//STARTUPINFO 구조체 변수의 주소값
+						&pi		//LPPROCESS_INFORMATION 구조체 변수의 주소값
+		);   //CreateProcess
+
+		if(isRun == FALSE)
+			_tprintf(ERROR_CMD, cmdTokenList[0]);
+	}
+
+	return 0;
+}
+
+/********************************************************
+ * 함수 : TCHAR * StrLower(TCHAR *pStr)
+ * 기능 : 문자열의 내에 존재하는 모든 대문자를 소문자로 변경한다.
+ * 		  변경된 문자열의 포인터를 반환한다.
+**********************************************************/
+
+TCHAR * StrLower(TCHAR *pStr)
+{
+	TCHAR *ret = pStr;
+
+	while(*pStr)
+	{
+		if(_istupper(*pStr))
+			*pStr = _totlower(*pStr);
+		pStr++;
+	}
+
+	return ret;
+}
+
+
