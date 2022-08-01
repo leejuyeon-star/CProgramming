@@ -18,27 +18,40 @@
 #define CMD_TOKEN_NUM  10
 #define DIR_LEN MAX_PATH+1      //정보가 저장될 메모리 버퍼의 크기
 
-TCHAR ERROR_CMD[] 
- = _T("'%s' is not an executable program. \n");
+TCHAR ERROR_CMD[] = _T("'%s' is not an executable program. \n");
 
-int CmdProcessing(void);
+//***************함수 선언*************************
+int CmdProcessing(bool, TCHAR arg[STR_LEN] = {0,});
 TCHAR * StrLower(TCHAR *);
+//************************************************
 
 
-int _tmain(int agrc, TCHAR * argv[])
-{
+int _tmain(int agrc, TCHAR * argv[]){
 	// 한글 입력을 가능하게 하기 위해
 	_tsetlocale(LC_ALL, _T("korean"));	
 	
 	DWORD isExit;
-	while(1)
-	{
-		isExit = CmdProcessing();
-		if(isExit == TRUE)
-		{
+
+	//***********명령 프롬프트(이 프로그램) 새로 생성한 경우 argv[1]부터 끝까지 한줄로 붙이기******
+	if(agrc>2){
+		TCHAR stString[STR_LEN] = {0, };
+
+		for(int i=1; i<agrc;i++){
+			_stprintf(stString, _T("%s %s"), stString, argv[i]);
+		}
+		isExit = CmdProcessing(true, stString);
+	}
+	else{
+		isExit = CmdProcessing(false);
+	}
+	//****************************************************************************
+
+	while(1){
+		if(isExit == TRUE){
 			_fputts(_T("Exit command processing \n"), stdout );
 			break;
 		}
+		isExit = CmdProcessing(false);
 	}
 
 	return 0; 
@@ -56,62 +69,82 @@ TCHAR seps[]   = _T(" ,\t\n");
  * 		  exit가 입력되면 TRUE를 반환하고 이는 프로그램의 종료로 이어진다.
 *************************************************/
 
-int CmdProcessing(void)
-{
-	//********문자열 입력받고 특정 문자열을 기준으로 나눠 배열에 따로 넣기**************
-	_fputts( _T("Best command prompt>> "), stdout );		//출력
-	_getts(cmdString);		//입력
+int CmdProcessing(bool retry, TCHAR arg[STR_LEN]){
+
+	// *************************명령어 가져오기*********************
+	//명령 프롬프트(이 프로그램) 새로 생성한 경우 매개변수 가져오기
+	if(retry){
+		_stprintf(cmdString, arg);
+	}
+	else{  //새로 생성하지 않은 경우 사용자에게서 직접 입력받아오기
+		_fputts( _T("Best command prompt>> "), stdout );		//출력
+		_getts(cmdString);		//입력
+	}
+
+
+	//********명령어를 특정 문자열을 기준으로 나눠 배열에 따로 넣기**************
 
 	TCHAR * token = _tcstok(cmdString, seps);		//특정 문자열을 찾아 \0로 변경 
 
 	int tokenNum = 0;
-	while(token != NULL)
-	{
+	while(token != NULL){
 		_tcscpy (cmdTokenList[tokenNum++], StrLower(token));	//token의 \0 이전 내용을 cmdTokenList[tokenNum++]에 덮어씀
 		token = _tcstok(NULL, seps);	//\0으로 바꿨던 그 주소부터 다시 구분자 찾아 \0으로 변경
 	}
-	//***************************************************************************
 	
-	if( !_tcscmp(cmdTokenList[0],_T("exit")) )
-	{
+	//**********************프로그램 종료**********************
+	if( !_tcscmp(cmdTokenList[0],_T("exit")) ){		
 		return TRUE;
 	}
-	else if ( !_tcscmp(cmdTokenList[0],_T("echo")) )
-	{
-		_tprintf(_T("it is echo \n"));
+	//*******************문자열 그대로 출력***********************
+	else if ( !_tcscmp(cmdTokenList[0],_T("echo")) ){		
+		for(int i=1; i<tokenNum; i++){
+			_fputts( cmdTokenList[i], stdout);		//출력
+			_tprintf("\n");
+		}
 	}
-	else if ( !_tcscmp(cmdTokenList[0],_T("start")) )
-	{
+	//**************명령 프롬프트(이 프로그램) 새로 생성*************
+	else if ( !_tcscmp(cmdTokenList[0],_T("start")) ){		
+		STARTUPINFO si = {0, };     //STARTUPINFO 구조체 초기화 
+		PROCESS_INFORMATION pi;      //PROCESS_INFOMATION 구조체 선언 
+		si.cb = sizeof(si);
+
+		TCHAR cmdStringWithOptions[STR_LEN] = {0,};
+		TCHAR optString[STR_LEN] = {0, };
+
+		//start 뒤 명령어 더 있는 경우
 		if(tokenNum>1){
-			if ( !_tcscmp(cmdTokenList[0],_T("echo")) )
+			// start 제외한 모든 문자열 붙이기
+			for(int i=1; i<tokenNum;i++){
+				_stprintf(optString, _T("%s %s"), optString, cmdTokenList[i]);
+			}
+			//실행할 파일명과 인자 합쳐 준비
+			_stprintf(cmdStringWithOptions, _T("%s %s"), _T("CommandPrmpt_One.exe"), optString);
+			}
 
+		//start 뒤 명령어 없는 경우
+		else{	
+			_stprintf(cmdStringWithOptions, _T("%s"), _T("CommandPrmpt_One.exe"));
 		}
-		else{
 
-		}
-		// _tprintf(_T("it is start \n"));
-		// STARTUPINFO si = {0, };     //STARTUPINFO 구조체 초기화 
-		// PROCESS_INFORMATION pi;      //PROCESS_INFOMATION 구조체 선언 
-		// si.cb = sizeof(si);
-		// BOOL isRun = CreateProcess(		
-		// 				NULL,     //생성할 프로세스명 or 경로, NULL이면 현 디렉터리에서 찾음
-		// 				CmdProject.exe,	//위가 NULL이면 이번 값을 통해 생성할 프로세스 이름과 인자까지 함께 전달가능, 문자열불가, 변수만 가능
-		// 				NULL,
-		// 				NULL, 
-		// 				TRUE, 
-		// 				0,
-		// 				NULL, 
-		// 				NULL, 
-		// 				&si, 	//STARTUPINFO 구조체 변수의 주소값
-		// 				&pi		//LPPROCESS_INFORMATION 구조체 변수의 주소값
-		// );   //CreateProcess
+		BOOL isRun = CreateProcess(		
+						NULL,     //생성할 프로세스명 or 경로, NULL이면 현 디렉터리에서 찾음
+						cmdStringWithOptions,	//위가 NULL이면 이번 값을 통해 생성할 프로세스 이름과 인자까지 함께 전달가능, 문자열불가, 변수만 가능
+						NULL,
+						NULL, 
+						TRUE, 
+						CREATE_NEW_CONSOLE,		//새 창 띄우기
+						NULL, 
+						NULL, 
+						&si, 	//STARTUPINFO 구조체 변수의 주소값
+						&pi		//LPPROCESS_INFORMATION 구조체 변수의 주소값
+		);   //CreateProcess
 
-		// CloseHandle(pi.hProcess);	//현 프로세스의 handle table에서 해당 프로세스의 핸들을 삭제하는 함수
-		// CloseHandle(pi.hThread);	//해당 프로세스의 thread 핸들을 삭제하는 함수
-
+		CloseHandle(pi.hProcess);	//현 프로세스의 handle table에서 해당 프로세스의 핸들을 삭제하는 함수
+		CloseHandle(pi.hThread);	//해당 프로세스의 thread 핸들을 삭제하는 함수
 	}
-	else		//생소한 명령어 입력하는 경우 표준 검색경로에 존재하는 실행파일로 간주
-	{
+	//*************생소한 명령어 입력하는 경우 표준 검색경로에 존재하는 실행파일로 간주***************
+	else{		
 		// Section 6 명령 프롬프트 프로젝트 기능 추가
 
 		STARTUPINFO si = {0, };     //STARTUPINFO 구조체 초기화 
@@ -133,7 +166,7 @@ int CmdProcessing(void)
 
 		BOOL isRun = CreateProcess(		
 						NULL,     //생성할 프로세스명 or 경로, NULL이면 현 디렉터리에서 찾음
-						cmdTokenList[0],	//위가 NULL이면 이번 값을 통해 생성할 프로세스 이름과 인자까지 함께 전달가능, 문자열불가, 변수만 가능
+						cmdTokenList[0],	//이전 인자가 NULL이면 이번 인자를 통해 생성할 프로세스명과 전달할 인자까지 함께 전달가능, 문자열불가, 변수만 가능, 띄어쓰기 기준으로 argv배열에 나뉘어 저장됨
 						NULL,
 						NULL, 
 						TRUE, 
@@ -151,18 +184,18 @@ int CmdProcessing(void)
 	return 0;
 }
 
+
+
 /********************************************************
  * 함수 : TCHAR * StrLower(TCHAR *pStr)
  * 기능 : 문자열의 내에 존재하는 모든 대문자를 소문자로 변경한다.
  * 		  변경된 문자열의 포인터를 반환한다.
 **********************************************************/
 
-TCHAR * StrLower(TCHAR *pStr)
-{
+TCHAR * StrLower(TCHAR *pStr){
 	TCHAR *ret = pStr;
 
-	while(*pStr)
-	{
+	while(*pStr){
 		if(_istupper(*pStr))
 			*pStr = _totlower(*pStr);
 		pStr++;
@@ -170,5 +203,6 @@ TCHAR * StrLower(TCHAR *pStr)
 
 	return ret;
 }
+
 
 
