@@ -10,7 +10,7 @@
 	undefined reference to `wWinMain@16' 오류가 나는 경우
 	해당 컴퓨터의 MinGW파일에서 UNICODE의 일부를 지원되지 않아 발생.
 	MinGW에 추가적으로 파일 저장 필요, include 필요
-	저장할 파일 출처 : https://github.com/coderforlife/mingw-unicode-main/blob/master/mingw-unicode.c  
+	저장할 파일 : https://github.com/coderforlife/mingw-unicode-main/blob/master/mingw-unicode.c  
 */
 #include "mingw-unicode.c"
 
