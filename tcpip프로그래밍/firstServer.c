@@ -2,6 +2,7 @@
 #include <Winsock2.h>
 #include <WS2tcpip.h>
 
+
 // 서버 소스
 // 참고 : https://cafe.naver.com/gamepromaster
 
@@ -19,27 +20,32 @@ int main(void){
     WSADATA wsaData;
     SOCKET listenSocket;
     SOCKADDR_IN servAddr;   //서버의 ip주소, port번호 저장하는 구조체
+
     char *ip_address="127.0.0.1";   //서버 자신의 ip주소
 
+
     // 1. 윈속 초기화
-    if(WSAStartup(MAKEWORD(2,2), &wsaData) != 0)
+    if(WSAStartup(MAKEWORD(2,2), &wsaData) != 0){
         printf("Faild WSAStartup() \n");
+        return 1;
+    }
 
     // 2. socket 생성
     listenSocket = socket(
-        PF_INET,    //IPv4 버전을 의미  (왜 PF?)
+        PF_INET,    //IPv4 버전을 의미 
         SOCK_STREAM,    //TCP를 의미 (UDP는 SOCK_DGRAM)
         IPPROTO_TCP     //TCP를 의미 (UDP는 IPPROTO_UDP)
         );
-    if(listenSocket == INVALID_SOCKET)  
+    if(listenSocket == INVALID_SOCKET){
+        WSACleanup();
         printf("Faild socket() \n");
+        return 1;
+    }
 
-    // 3. 서버 자신의 ip주소, port번호 저장
+    // 3. 서버 자신의 ip주소, port번호 지정
     memset(&servAddr, 0, sizeof(servAddr));
-
     servAddr.sin_family = AF_INET;          //IP버전 설정. (AF_INET : IPv4) 
-    servAddr.sin_addr.s_addr = htonl(INADDR_ANY);   //IP 주소 설정(INADDR_ANY : "이 컴퓨터의 랜카드중 사용가능한 랜카드의 ip주소를 사용하라") (htonl :빅 엔디안으로 데이터 변환)
-    servAddr.sin_port = htons(30002);       //port 번호 설정 (htonl : 빅 엔디안으로 데이터 변환)
+    servAddr.sin_port = htons(30002);       //port 번호 설정 (htons() : 호스트의 엔디안으로 데이터 변환)
 
     
     //      3-1. ip 주소를 binary 형태로 변환
@@ -54,15 +60,15 @@ int main(void){
 
     //******************** 방법2. Mingw32를 사용하는 경우 ****************************     
         //inet_pton() 대신 WSAStringToAddress 사용
-    int size_sock_addr_in = sizeof(servAddr);
+    // int size_sock_addr_in = sizeof(servAddr);
 
-    WSAStringToAddress(                      //? 생략 가능?
-        (LPSTR)ip_address,  //ip 주소
-        AF_INET,    //IP버전 설정. (AF_INET == IPv4)
-        NULL, 
-        (LPSOCKADDR)&servAddr, 
-        (LPINT)&size_sock_addr_in
-        );
+    // WSAStringToAddress(                      //? 서버는 왜 생략 가능?
+    //     (LPSTR)ip_address,  //ip 주소
+    //     AF_INET,    //IP버전 설정. (AF_INET == IPv4)
+    //     NULL, 
+    //     (LPSOCKADDR)&servAddr, 
+    //     (LPINT)&size_sock_addr_in
+    //     );
     //*************************************************************************
 
 
@@ -72,68 +78,87 @@ int main(void){
         listenSocket,    //바인딩할 socket
         (SOCKADDR*)&servAddr,   //바인딩할 sockaddr의 주소
         sizeof(servAddr)    //sockaddr의 크기
-        ) == SOCKET_ERROR)
+        ) == SOCKET_ERROR){
             printf("Binding Error \n");
+            closesocket(listenSocket);
+            WSACleanup();
+            return 1;
+        }
    
     if(listen(
         listenSocket,    //접속대기할 socket
         5           //보류중인 연결 대기열의 최대 길이
-        ) == SOCKET_ERROR)
-        printf("listen Error \n");
+        ) == SOCKET_ERROR){
+            printf("listen Error \n");
+            closesocket(listenSocket);
+            WSACleanup();
+            return 1;
+        }
 
+    printf("server open\n");
 
     SOCKADDR_IN     clientAddr;
-    SOCKET      clientSocket;       //소켓이 아닌 우체통 비슷한건가?
+    SOCKET      clientSocket;       
     int         sizeClientAddr = sizeof(clientAddr);
-    char sendData[255] = "hello";
+    char sendData[255] = "hi Client";
     char recvByte;
     char recvData[255];
     int recvCount = 0;
 
-    // 4. 접속이 시도된 클라이언트 연결과 통신 처리
+
+    // 4. 접속이 시도된 클라이언트의 통신 처리
+    //한 클라이언트와 통신이 끊겨면 다른 클라이언트의 연결을 기다리기 위해 무한반복
     while(1){
         //      4-1 클라이언트 연결 기다리기
         clientSocket = accept(
-            listenSocket,
+            listenSocket,      //클라이언트에게서 받는 역할을 할 소켓 
             (SOCKADDR*)&clientAddr,     //client의 ip주소, port번호가 있음
             &sizeClientAddr);
-        if(clientSocket == INVALID_SOCKET)
+        if(clientSocket == SOCKET_ERROR)
             printf("Failed accept \n");
         recvCount = 0;
 
         printf("accept client socket : %d   \n", clientSocket);
+        printf("client IP, port : %d.%d.%d.%d : %d \n", clientAddr.sin_addr.S_un.S_un_b.s_b1,
+            clientAddr.sin_addr.S_un.S_un_b.s_b2,
+            clientAddr.sin_addr.S_un.S_un_b.s_b3,
+            clientAddr.sin_addr.S_un.S_un_b.s_b4,
+            clientAddr.sin_port);
 
         //      4-2. 클라이언트에게 send
         send(
-            clientSocket,
-            sendData,
+            clientSocket,       //클라이언트가 접속 시도시 보낸 소켓의 정보
+            sendData,           //보낼 데이터
             strlen(sendData)+1,
             0
         );
 
-        //      4-3. 접속한 client가 접속을 끊을때까지 recv 대기를 반복
-        printf("recv count : ");
+        //      4-3. 접속한 client가 접속을 끊을때까지 대기를 반복
         while (recvByte = recv(    // (블로킹 함수임)
-        clientSocket,       
-        recvData,   //buffer의 크기
-        sizeof(recvData),   //buffer의 크기
-        0
-        ))
-        {
-            // 받은걸 그대로 보낸다.
-            printf("[%d]%d", ++recvCount, recvData[0]);
-            send(clientSocket, recvData, recvByte, 0);
+                clientSocket,       //클라이언트가 접속 시도시 보낸 소켓의 정보
+                recvData,           //buffer
+                sizeof(recvData),   //buffer의 크기
+                0
+        )){
+            printf("recv message : %s \n", recvData);
+            //클라이언트에게 send
+
+            // 서버에게서 데이터 입력받아 전송
+            fputs("Input String : ", stdout);
+            scanf("%s", sendData);
+            send(clientSocket, sendData, recvByte, 0);
         }
                 
         //      4-4 접속이 끊긴 처리
         printf("\n");
         closesocket(clientSocket);
         printf("close socket : %d \n", clientSocket);
-
+        
     }
     
     // 5. 소켓 종료 -> 원속 종료
     closesocket(listenSocket);
+    closesocket(clientSocket);      //? 삭제해
     WSACleanup();
 
     return 0;
