@@ -158,7 +158,6 @@ int main(void){
     
     // 5. 소켓 종료 -> 원속 종료
     closesocket(listenSocket);
-    closesocket(clientSocket);      //? 삭제해
     WSACleanup();
 
     return 0;
