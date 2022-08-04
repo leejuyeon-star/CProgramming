@@ -19,10 +19,8 @@ tcpip프로그래밍
 윤성우 윈도우즈 시스템 프로그래밍
 -------------------------------
 
-+ Calculator2.c
-   + 계산기 생성, 소멸시키기
-      + 자식 프로세스가 종료될 때까지 기다리는 방법 - WaitForSingleObject() 함수 활용
-      + 자식 프로세스의 상태를 확인하는 방법 - GetExitCodeProcess() 함수 활용
++ ManageProcess.c
+   + 프로세스 생성, 소멸, 관리
 
 + CommandPrompt
    + 명령 프롬프트 제작
