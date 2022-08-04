@@ -3,7 +3,7 @@ ServerProgramming
 tcpip프로그래밍
 --------------------
 + firstClient.c
-  + 클라이언트 소스
+  + 클라이언트 소스 - 서버와 채팅 주고받기
     + 서버에 연결하는 방법
     + pragma 사용시 GCC(MinGW)로 컴파일하는 방법
 
