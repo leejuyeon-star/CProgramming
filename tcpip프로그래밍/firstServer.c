@@ -6,10 +6,10 @@
 // 서버 소스
 // 참고 : https://cafe.naver.com/gamepromaster
 
-//**************GCC(MinGW)로 컴파일시*******************
-// pragma는 GCC에서 유효하지 않으므로 무시됨. 또한 MinGW에는 "ws2_32.lib"이 없으므로 문제 발생.
+//**************GCC(MinGW)로 컴파일할 때 문제 발생하는 경우*******************
+// MinGW에는 "ws2_32.lib"이 없으므로 문제 발생.
 // 따라서 아래 명령어로 컴파일해야 함
-//> gcc 컴파일할 파일명 -o 생성될 파일명 -lws2_32
+//> gcc 컴파일할 파일명 -o 생성될 파일명 -l ws2_32
 // 참고 : https://stackoverflow.com/questions/34384803/c-undefined-reference-to-wsastartup8
 //*****************************************
 
