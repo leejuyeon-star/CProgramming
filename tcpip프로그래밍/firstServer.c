@@ -21,7 +21,6 @@ int main(void){
     SOCKET listenSocket;
     SOCKADDR_IN servAddr;   //서버의 ip주소, port번호 저장하는 구조체
 
-    char *ip_address="127.0.0.1";   //서버 자신의 ip주소
 
 
     // 1. 윈속 초기화
@@ -32,23 +31,24 @@ int main(void){
 
     // 2. socket 생성
     listenSocket = socket(
-        PF_INET,    //IPv4 버전을 의미 
-        SOCK_STREAM,    //TCP를 의미 (UDP는 SOCK_DGRAM)
-        IPPROTO_TCP     //TCP를 의미 (UDP는 IPPROTO_UDP)
+        AF_INET,        //@@@ IP 버전 설정 (IPv4 버전은 AF_INET, IPv6은 AF_INET6)
+        SOCK_STREAM,    //@@@ (TCP는 SOCK_STREAM, UDP는 SOCK_DGRAM)
+        IPPROTO_TCP     //@@@ (TCP는 IPPROTO_TCP, UDP는 IPPROTO_UDP)
         );
     if(listenSocket == INVALID_SOCKET){
-        WSACleanup();
         printf("Faild socket() \n");
+        WSACleanup();
         return 1;
     }
 
     // 3. 서버 자신의 ip주소, port번호 지정
     memset(&servAddr, 0, sizeof(servAddr));
-    servAddr.sin_family = AF_INET;          //IP버전 설정. (AF_INET : IPv4) 
-    servAddr.sin_port = htons(30002);       //port 번호 설정 (htons() : 호스트의 엔디안으로 데이터 변환)
+    servAddr.sin_family = AF_INET;  //@@@ IP 버전 설정 (IPv4 버전은 AF_INET, IPv6은 AF_INET6)
+    char *ip_address="127.0.0.1";   //@@@ 서버의 ip주소 설정
+    servAddr.sin_port = htons(30002);       //@@@ 서버의 port 번호 설정 (htons() : 호스트의 엔디안으로 데이터 변환)
 
-    
-    //      3-1. ip 주소를 binary 형태로 변환
+
+    //      3-1. @@@ ip 주소를 binary 형태로 변환 (아래 두가지 방법 중 한가지 선택)
     //*************** 방법1. Mingw32를 사용하지 않는 경우 **************************
         //inet_pton() 사용
     // inet_pton(
@@ -100,7 +100,7 @@ int main(void){
     SOCKADDR_IN     clientAddr;
     SOCKET      clientSocket;       
     int         sizeClientAddr = sizeof(clientAddr);
-    char sendData[255] = "hi Client";
+    char sendData[255] = "hi Client";       //@@@ 처음 연결 성공시 클라이언트에게 보낼 메세지
     char recvByte;
     char recvData[255];
     int recvCount = 0;
@@ -143,7 +143,7 @@ int main(void){
             printf("recv message : %s \n", recvData);
             //클라이언트에게 send
 
-            // 서버에게서 데이터 입력받아 전송
+            // @@@ 서버 사용자에게서 데이터 입력받아 전송
             fputs("Input String : ", stdout);
             scanf("%s", sendData);
             send(clientSocket, sendData, recvByte, 0);
