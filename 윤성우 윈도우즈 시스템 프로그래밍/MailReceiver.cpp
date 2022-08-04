@@ -1,7 +1,7 @@
 /*
 	예제 7-2
-	메일슬롯 방식의 IPC
-	메일 슬롯으로 한 프로세스에게서 문자열 받는 프로세스 만들기
+	mailslot 기반의 IPC
+	mailslot으로 한 프로세스가 다른 프로세스에게 문자열 받는 프로세스 만들기
 	MailReceiver.cpp
 	
 */
@@ -58,54 +58,6 @@ int _tmain(int argc, LPTSTR argv[])
 	}
 
 	CloseHandle(hMailSlot);
-
-
-//*********************************************************
-#define SLOT_NAME2 _T("\\\\.\\mailslot\\mailbox2")
-	HANDLE hMailSlot2;  //mailslot 핸들
-	TCHAR message[50];
-    DWORD bytesWritten;  // number of bytes write
-
-	hMailSlot2=CreateFile(		//전달할 파일 마련
-		//모두 고정
-		SLOT_NAME2, 		//연결할 상대 슬롯 이름
-		GENERIC_WRITE, 		//메일 슬롯 용도(읽기,쓰기,읽기/쓰기)
-		FILE_SHARE_READ, 
-		NULL,
-		OPEN_EXISTING, 		//파일의 생성 방식(새로운 파일 생성 or 기존 파일에 접근)
-		FILE_ATTRIBUTE_NORMAL, 
-		NULL);
-
-	if(hMailSlot2==INVALID_HANDLE_VALUE)
-	{
-		_fputts(_T("Unable to create mailslot!!\n"), stdout);
-		return 1;
-	}
-
-	while(1)
-	{
-		_fputts(_T("MY CMD>"), stdout);
-		_fgetts(message, sizeof(message)/sizeof(TCHAR), stdin);
-
-		if(!WriteFile(		//데이터 보내는 함수
-			hMailSlot2, 	//연결할 파일 핸들
-			message, 	//전송 데이터 버퍼(전송할 데이터 담겨있음)
-			_tcslen(message)*sizeof(TCHAR), 	//전송 크기
-			&bytesWritten, 	//전송 결과
-			NULL))	
-		{
-			_fputts(_T("Unable to write!"), stdout);
-			CloseHandle(hMailSlot2);		//현 프로세스의 handle table에서 해당 프로세스의 핸들을 삭제하는 함수
-			return 1;
-		}
-
-		if(!_tcscmp(message, _T("exit")))
-		{
-			_fputts(_T("Good Bye!"), stdout);
-			break;
-		}
-
-	}
 
 	return 0;
 }
