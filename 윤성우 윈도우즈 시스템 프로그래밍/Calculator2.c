@@ -1,5 +1,9 @@
-// 예제 6-8
-// 계산기 생성, 소멸시키기
+/*
+	예제 6-8
+	계산기 생성, 소멸시키기
+
+	WaitForSingleObject(), GetExitCodeProcess() 함수 활용방법
+*/
 
 #include <stdio.h>
 #include <tchar.h>
@@ -62,13 +66,9 @@ int _tmain(int argc, TCHAR* argv[])
 			GetExitCodeProcess(pi.hProcess, &state);	
 
 
-			//!cal.exe(계산기) 프로그램은 창을 닫지 않아도 일정시간 이후 return 0; 된다.
-			//!그래서 state == STILL_ACTIVE 되는 일이 없다.
-			//!그 이유는?
-
 			if(state == STILL_ACTIVE )
 			{
-				_tprintf(_T("STILL_ACTIVE \n\n"));
+				_tprintf(_T("STILL_ACTIVE \n WaitForSingleObject() is not working!"));
 			}
 			else{ //자식 프로세스가 실행 종료시 부모 프로세스의 handle table에서 자식 프로세스의 핸들 삭제. 
 				  //이로써 자식 프로세스 종료시 자식KernelObject도 삭제하도록 함
