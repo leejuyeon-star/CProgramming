@@ -57,15 +57,7 @@
 #include <stdio.h>
 #include <tchar.h>		//동시지원하는 함수를 MBCS, WBCS 함수로 변환해줌. 함수 사용시 이 파일에서 함수 검색.
 #include <windows.h>
-#include <locale.h>		//WBCS 한글 사용시 필요
-
-/*
-	undefined reference to `wWinMain@16' 오류가 나는 경우
-	해당 컴퓨터의 MinGW파일에서 UNICODE의 일부를 지원되지 않아 발생.
-	MinGW에 추가적으로 파일 저장 필요, include 필요
-	저장할 파일 출처 : https://github.com/coderforlife/mingw-unicode-main/blob/master/mingw-unicode.c  
-*/
-#include "mingw-unicode.c"		
+#include <locale.h>		//WBCS 한글 사용시 필요	
 
 int _tmain(int argc, TCHAR* argv[])		// main을 _tmain으로 변환
 {
