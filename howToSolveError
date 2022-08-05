@@ -2,4 +2,8 @@
     - "undefined reference to ~" 오류
         - 원인 : 라이브러리가 자동으로 링크되지 않아 발생
         - 해결 : >> gcc 컴파일할 파일명 -o 생성될 파일명 -l 랑크할 라이브러리명
+        
+    - " undefined reference to `wWinMain@16' " 오류
+        - 원인 : main함수가 없음
+        - 해결 : main함수를 넣어준다
 */
