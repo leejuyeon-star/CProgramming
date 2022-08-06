@@ -40,11 +40,17 @@ tcpip프로그래밍
 
 + MailReceiver.cpp
    + mailslot으로 한 프로세스가 다른 프로세스에게 문자열 받는 프로세스 만들기
-     + mailslot을 생성해 한 프로세스가 다른 프로세스에게 문자열 받는 방법 - CreateMailslot(), ReadFile() 함수 활용
 
 + MailSender.cpp
    + mailslot으로 한/여러 프로세스에게 문자열 보내는 프로세스 만들기 
-      + mailslot을 생성해 한/여러 프로세스에게 문자열 보내는 방법 - CreateFile(), WriteFile() 함수 활용
+
++ ParentMailSender.cpp
+   + 핸들을 상속받은 자식 프로세스에게 파일 이용해 특정 핸들의 정보 보내기 
+	 + 메일 슬롯 버전
+
++ ChildMailSender.cpp
+   + 부모 프로세스로부터 받은 핸들을 가져와서(파일 이용하여) 한 프로세스를 부모 프로세스와 같이 조종(시용)하기
+	 + 메일 슬롯 활용버전
 
 + Operation2.c
    + 프로세스의 실행 우선순위 변경하기
