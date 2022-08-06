@@ -63,7 +63,7 @@ int _tmain(int argc, LPTSTR argv[])
 	PROCESS_INFORMATION pi;	
 	si.cb=sizeof(si);
 
-	TCHAR command[]=_T("MailSender2_2.exe");
+	TCHAR command[]=_T("ChildMailSender.exe");
 
 	CreateProcess(NULL,
 			      command,
