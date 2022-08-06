@@ -25,6 +25,16 @@ int _tmain(int agrc, TCHAR * argv[]){
 	
 	DWORD isExit;
 
+	//***********argv[](부모프로세스가 보낸 인자)를 가져오는 방법**************
+	TCHAR stString1[STR_LEN] = {0, };
+	TCHAR stString2[STR_LEN] = {0, };
+	//인자가 한글자여도 %c가 아닌 %s로 가져와야 함
+	_stprintf(stString1, _T("%s"), argv[1]);		//첫번째 인자 가져오기
+	_stprintf(stString2, _T("%s"), argv[2]);		//두번째 인자 가져오기
+	//***********************************************************************
+
+
+
 	//***********명령 프롬프트(이 프로그램) 새로 생성한 경우 argv[1]부터 끝까지 한줄로 붙이기******
 	if(agrc>2){
 		TCHAR stString[STR_LEN] = {0, };
@@ -197,6 +207,5 @@ TCHAR * StrLower(TCHAR *pStr){
 
 	return ret;
 }
-
 
 
