@@ -5,6 +5,7 @@
 #include <tchar.h>
 #include <windows.h> 
 #include <ctype.h>	//_istupper, _totlower 를 위함
+#include <locale.h>		//WBCS 한글 사용시 필요	
 
 #define STR_LEN    256
 #define CMD_TOKEN_NUM  10
@@ -19,6 +20,11 @@ TCHAR * StrLower(TCHAR *);
 
 
 int _tmain(int agrc, TCHAR * argv[]){
+	
+#ifdef UNICODE		// WBCS 한글 사용시 적용
+	_wsetlocale(LC_ALL, L"korean");	
+#endif
+
 	DWORD isExit;
 
 	//***********argv[](부모프로세스가 보낸 인자)를 가져오는 방법**************
