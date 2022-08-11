@@ -38,8 +38,8 @@
 //***********************문자 셋 변환하는 방법***************************
 // * WBCS(UNICODE) 기반으로 컴파일하고자 하는 경우 "#include보다 위에" 해당 코드 삽입
 // * 이 경우 _tmain 불가. main만 가능
-#define UNICODE
-#define _UNICODE
+// #define UNICODE
+// #define _UNICODE
 
 // * MBCS 기반으로 컴파일하고자 하는 경우 아래 코드 삽입
 // #undef UNICODE
@@ -57,8 +57,10 @@
 // int _tmain(int argc, TCHAR* argv[])	//이유는 모르겠으나 WBCS인 경우 _tmain 사용시 오류발생
 int main(void)		//WBCS인 경우 main 사용(MBCS도 사용해도 무관함)
 {	
-	// @@@ WBCS 한글 사용시 적용, (MBCS인 경우 반드시 주석처리)
+
+#ifdef UNICODE		// WBCS 한글 사용시 적용
 	_wsetlocale(LC_ALL, L"korean");	
+#endif
 
 	//문자열의 sizeof, len 확인	
 	TCHAR str1[] = _T("abcde");
