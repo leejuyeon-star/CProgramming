@@ -1,4 +1,4 @@
-ServerProgramming
+CProgramming
 ==================
 
 주석에 @@@ 있는 부분만 수정하여 기능 변경, 추가하기
@@ -31,13 +31,6 @@ tcpip프로그래밍
       + 자식 프로세스 생성하는 방법
       + 문자열의 내에 존재하는 모든 대문자를 소문자로 변경하는 방법
 
-+ MBCS_WBCS2.cpp
-   + MBCS와 WBCS(유니코드)를 동시지원하기
-      + MBCS와 WBCS(유니코드)를 동시지원하는 방법
-      + windows.h에서 제공하는 동시지원 자료형 모음
-      + windows.h에서 제공하는 자료형 관련 매크로 모음
-      + 문자 셋 변환하는 방법 (MBCS <-> WBCS)
-
 + MailReceiver.cpp
    + mailslot으로 한 프로세스가 다른 프로세스에게 문자열 받는 프로세스 만들기
 
@@ -56,3 +49,22 @@ tcpip프로그래밍
    + 프로세스의 실행 우선순위 변경하기
       + 현재 실행되고 있는 프로세스를 확인하는 방법 - GetCurrentProcess() 함수 활용
       + 프로세스의 우선순위 변경하는 방법 - SetPriorityClass() 함수 활용
+      
+      
+문법
+----------------------------------
++ MBCS_WBCS2.cpp
+   + MBCS와 WBCS(유니코드) 동시지원하기
+      + MBCS와 WBCS(유니코드)를 동시지원하는 방법
+      + windows.h에서 제공하는 동시지원 자료형 모음
+      + windows.h에서 제공하는 자료형 관련 매크로 모음
+      + 문자 셋 변환하는 방법 (MBCS <-> WBCS)
+
++ AboutHeaderFile
+   + 헤더파일에 관하여
+
++ aboutString
+   + 문자열에 관하여
+      + char, char* char[] 구분
+      + 입출력 함수 정리
+
