@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <tchar.h>
-#include <locale.h>
 #include <windows.h> 
 #include <ctype.h>	//_istupper, _totlower 를 위함
 
@@ -20,17 +19,14 @@ TCHAR * StrLower(TCHAR *);
 
 
 int _tmain(int agrc, TCHAR * argv[]){
-	// 한글 입력을 가능하게 하기 위해
-	_tsetlocale(LC_ALL, _T("korean"));	
-	
 	DWORD isExit;
 
 	//***********argv[](부모프로세스가 보낸 인자)를 가져오는 방법**************
-	TCHAR stString1[STR_LEN] = {0, };
-	TCHAR stString2[STR_LEN] = {0, };
+	// TCHAR stString1[STR_LEN] = {0, };
+	// TCHAR stString2[STR_LEN] = {0, };
 	//인자가 한글자여도 %c가 아닌 %s로 가져와야 함
-	_stprintf(stString1, _T("%s"), argv[1]);		//첫번째 인자 가져오기
-	_stprintf(stString2, _T("%s"), argv[2]);		//두번째 인자 가져오기
+	// _stprintf(stString1, _T("%s"), argv[1]);		//첫번째 인자 가져오기
+	// _stprintf(stString2, _T("%s"), argv[2]);		//두번째 인자 가져오기
 	//***********************************************************************
 
 
@@ -207,5 +203,4 @@ TCHAR * StrLower(TCHAR *pStr){
 
 	return ret;
 }
-
 
