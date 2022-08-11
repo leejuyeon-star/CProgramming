@@ -6,4 +6,8 @@
     - " undefined reference to `wWinMain@16' " 오류
         - 원인 : main함수가 없음
         - 해결 : main함수를 넣어준다
+        
+    - " cannot open output file main.exe: Permission denied " 오류
+        - 원인 : 다른 프로그램에서 해당 소스를 실행중임
+        - 해결 : 실행중인 프로그램을 종료한다
 */
