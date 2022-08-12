@@ -6,12 +6,10 @@ CProgramming
 
 tcpip프로그래밍
 --------------------
-+ firstClient.c
-  + 클라이언트 소스 - 서버와 채팅 주고받기
++ firstClient.c - 서버와 채팅 주고받기 (클라이언트 소스)
     + 서버에 연결하는 방법
 
-+ firstServer.c
-  + 서버 소스
++ firstServer.c - 클라이언트와 채팅 주고받기 (서버 소스) 
     + 서버 열고 클라이언트와 연결하는 방법  
 
 
@@ -19,11 +17,9 @@ tcpip프로그래밍
 윤성우 윈도우즈 시스템 프로그래밍
 -------------------------------
 
-+ ManageProcess.c
-   + 프로세스 생성, 소멸, 관리
++ ManageProcess.c - 프로세스 생성, 소멸, 관리
 
-+ CommandPrompt
-   + 명령 프롬프트 제작
++ CommandPrompt - 명령 프롬프트 제작
       + 한글 입력을 가능하게 하기 위한 방법
       + 배열에 있는 여러 문자열 붙이는 방법
       + 자식 프로세스 생성시 부모 프로세스에서 보낸 인자까지 같이 가져오는 방법
@@ -31,42 +27,39 @@ tcpip프로그래밍
       + 자식 프로세스 생성하는 방법
       + 문자열의 내에 존재하는 모든 대문자를 소문자로 변경하는 방법
 
-+ MailReceiver.cpp
-   + mailslot으로 한 프로세스가 다른 프로세스에게 문자열 받는 프로세스 만들기
++ MailReceiver.cpp - 한 프로세스가 다른 프로세스에게 문자열 받기
+      + mailslot 이용
 
-+ MailSender.cpp
-   + mailslot으로 한/여러 프로세스에게 문자열 보내는 프로세스 만들기 
++ MailSender.cpp - 한/여러 프로세스에게 문자열 보내기
+   + mailslot 이용 
 
-+ ParentMailSender.cpp
-   + 핸들을 상속받은 자식 프로세스에게 파일 이용해 특정 핸들의 정보 보내기 
++ ParentMailSender.cpp - 핸들을 상속받은 자식 프로세스에게 특정 핸들의 정보 보내기 
      + 메일 슬롯 버전
+     + 파일을 이용하여 핸들의 정보 보내기
 
-+ ChildMailSender.cpp
-   + 부모 프로세스로부터 받은 핸들을 가져와서(파일 이용하여) 한 프로세스를 부모 프로세스와 같이 조종(시용)하기
++ ChildMailSender.cpp - 부모 프로세스로부터 받은 핸들을 가져와 한 프로세스를 부모 프로세스와 같이 조종(시용)하기
      + 메일 슬롯 버전
+     + 파일을 이용하여 핸들의 정보 가져오기
 
-+ Operation2.c
-   + 프로세스의 실행 우선순위 변경하기
-      + 현재 실행되고 있는 프로세스를 확인하는 방법 - GetCurrentProcess() 함수 활용
-      + 프로세스의 우선순위 변경하는 방법 - SetPriorityClass() 함수 활용
++ Operation2.c - 프로세스의 실행 우선순위 변경하기
+      + GetCurrentProcess() 함수 활용하여 현재 실행되고 있는 프로세스를 확인
+      + SetPriorityClass() 함수 활용하여 프로세스의 우선순위 변경
       
       
 문법
 ----------------------------------
-+ MBCS_WBCS2.cpp
-   + MBCS와 WBCS(유니코드) 동시지원하기
++ MBCS_WBCS2.cpp - MBCS와 WBCS(유니코드) 동시지원하기
       + MBCS와 WBCS(유니코드)를 동시지원하는 방법
       + windows.h에서 제공하는 동시지원 자료형 모음
       + windows.h에서 제공하는 자료형 관련 매크로 모음
       + 문자 셋 변환하는 방법 (MBCS <-> WBCS)
 
-+ AboutHeaderFile
-   + 헤더파일에 관하여
++ AboutHeaderFile - 헤더파일에 관하여
 
-+ aboutString
-   + 문자열에 관하여
-      + char, char* char[] 구분
-      + 입출력 함수 정리
++ aboutString - 문자열에 관하여
+      + char, char* char[]에 관하여
+      + 한국어 깨지지 않게하는 방법 (MBCS와 WBCS(유니코드)를 동시지원하는 방법)
+      + 각종 입출력 함수 정리
       
       
 별 피하기 게임
