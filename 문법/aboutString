@@ -92,7 +92,7 @@ int main(void){
     _tscanf(_T("%s"), chp1);
     ClearLineFromReadBuffer();
     _tprintf(_T("%s \n"), chp1);
-    //*한국어 한글자씩 출력하는 방법 : MBCS인 경우 한글자당 2칸 연속으로, WBCS인 경우 한글자당 1칸 출력해야 한다 
+    //*한국어 한글자씩 출력하는 방법 : MBCS인 경우 한글자당 2칸 or 3칸 연속으로, WBCS인 경우 한글자당 1칸 출력해야 한다 
     _tprintf(_T("%c%c \n"), chp1[0], chp1[1]);
 
     _tprintf(_T("\n"));
