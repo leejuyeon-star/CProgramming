@@ -1,10 +1,6 @@
 /*
     - UNICODE 기반 초성 게임
-    - tcp/ip로 구현
-    - 어떤 컴퓨터에서든 한국어 깨지지 않도록 구현
 */
-
-
 
 
 // - 어떤 컴퓨터에서든 한국어 깨지지 않도록 제공
@@ -56,12 +52,7 @@ int main(void){
 #endif
 
 #ifndef UNICODE     //MBCS인 경우
-    // 일단 MBCS기반으로 제작해보기 한글 입력을 euc-kr로 받아야 하는데 안되네~ 포기
-    // LPTSTR chp1 =_T("abcd");     //!불가. 상수문자열을 상수가 아닌 변수에 넣을 수 없기 때문
-    // TCHAR chp1[] =_T("abcd");     //대체
-    LPCTSTR chp1 = _T("abcd");     //대체
-    LPTSTR chp1 = (char*)("abcd");     //대체 (WBCS는 불가)
-    _tprintf("%s", chp1);
+    //! 일단 MBCS기반으로 제작해보기 한글 입력을 euc-kr로 받아야 하는데 안되네 수정 필요
 #endif
 
 #ifdef UNICODE     //WBCS인 경우
@@ -139,11 +130,6 @@ int main(void){
     }
     _tprintf(_T("성공!\n"));
     return 0;
-
-    // 한글에 대응하는 숫자 찾아보기 
-    // https://icodebroker.tistory.com/7077 참고하여 한글 MBCS정리
-    //한글 한글자당 3byte
-    //입력된 글자가 특정 범위에 속하면 해당 초성임을 판단
 
 #endif
 }
