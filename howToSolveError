@@ -14,4 +14,8 @@
     - " warning: ISO C++ forbids converting a string constant to ‘char*‘ " 오류
         - 원인 : char* 형 변수에 상수를 넣으려 함
         - 해결 : 상수를 넣지 않음
+        
+    - " 피연산자 형식이 호환되지 않습니다("TCHAR" 및 "const char *") " 오류
+        - 원인 : _T() 형식을 넣지 않았거나 상수인 값과 변수를 비교하려 함
+        - 해결 : 상수를 변수에 따로 넣고 변수와 변수로 비교
 */
