@@ -86,9 +86,11 @@ int main(void){
     //********* char* (LPTSTR)**********
     //* 여러byte 저장가능, 배열 크기 정하지 않음, 1byte단위로 수정 불가
     _tprintf(_T("****** char* ****** \n"));
-    // LPTSTR chp1 =_T("abcd");     //!불가. 상수문자열을 상수가 아닌 변수에 넣을 수 없기 때문
     // LPTSTR chp1 = malloc(sizeof(TCHAR) * 10);        //?불가
-    LPTSTR chp1;
+    // LPTSTR chp1 =_T("abcd");     //!불가. 상수문자열을 상수가 아닌 변수에 넣을 수 없기 때문
+    // TCHAR chp1[] =_T("abcd");     //대체
+    // LPCTSTR chp1 = _T("abcd");     //대체
+    LPTSTR chp1 = (char*)("abcd");     //대체 (WBCS는 불가)
     _tscanf(_T("%s"), chp1);
     ClearLineFromReadBuffer();
     _tprintf(_T("%s \n"), chp1);
@@ -160,7 +162,7 @@ int main(void){
     //* 한번 입력받으면 항상 바로 버퍼를 비워 오류 가능성을 없애지
     _tprintf(_T("*************출력버퍼를 비우는 함수**************\n"));
     //* int fflush(FILE * stream);
-    //* 출력버퍼를 비움으로써 출력을 유도함
+    //* 출력버퍼를 비움으로써 버퍼에 남아있던 것을 모두 출력함
     fflush(stdout);
 
 
