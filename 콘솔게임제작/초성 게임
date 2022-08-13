@@ -1,0 +1,149 @@
+/*
+    - UNICODE 기반 초성 게임
+    - tcp/ip로 구현
+    - 어떤 컴퓨터에서든 한국어 깨지지 않도록 구현
+*/
+
+
+
+
+// - 어떤 컴퓨터에서든 한국어 깨지지 않도록 제공
+//***********************문자 셋 변환하는 방법***************************
+// * WBCS(UNICODE) 기반으로 컴파일하고자 하는 경우 "#include보다 위에" 해당 코드 삽입
+#define UNICODE
+#define _UNICODE
+
+// * MBCS 기반으로 컴파일하고자 하는 경우 아래 코드 삽입
+// #undef UNICODE
+// #undef _UNICODE
+//**************************************************
+
+
+#include <windows.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <tchar.h>
+#include <locale.h>		//WBCS 한글 사용시 필요	
+#include <time.h>   //srand를 위함
+
+void ClearLineFromReadBuffer(void){
+    while(getchar() != '\n');
+}
+
+// //문자열에 '\t' 또는 공백이 있을 경우 삭제
+// void ClearSpace(LPTSTR ch, int len){
+//     for(int i=0; i<len; i++){
+//         if((*(ch+i) == '\t') || (*(ch+i) == ' ')){
+//             for(int h=0; h<i; h++){
+//                 tmpch1 = *(ch+h);
+//             }
+//             for(int h=i; h<len; h++){
+//                 tmpch2 = *(ch+h);
+//             }
+//             strcat(tmpch1, tmpch2);
+//             for(int j=i; j<len;j++){
+//                 *(ch+i)= *(ch+i+1);
+//             }
+//         }
+//     }
+// }
+
+// 초성게임
+int main(void){
+
+#ifdef UNICODE		// WBCS 한글 사용시 적용
+	_wsetlocale(LC_ALL, L"korean");	
+#endif
+
+#ifndef UNICODE     //MBCS인 경우
+    // 일단 MBCS기반으로 제작해보기 한글 입력을 euc-kr로 받아야 하는데 안되네~ 포기
+    // LPTSTR chp1 =_T("abcd");     //!불가. 상수문자열을 상수가 아닌 변수에 넣을 수 없기 때문
+    // TCHAR chp1[] =_T("abcd");     //대체
+    LPCTSTR chp1 = _T("abcd");     //대체
+    LPTSTR chp1 = (char*)("abcd");     //대체 (WBCS는 불가)
+    _tprintf("%s", chp1);
+#endif
+
+#ifdef UNICODE     //WBCS인 경우
+    srand(time(NULL));
+    int level = 0;
+    int randi;
+
+    // 초성 지정
+    TCHAR unich[] = _T("ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ");     
+    TCHAR uniStr[]= _T("가깋나닣다딯라맇마밓바빟사싷아잏자짛차칳카킿타팋파핗하힣");     // https://jjeong.tistory.com/696 <- 한글 코드 범위 참고
+    int chCount = 14;    //초성 개수
+    int comNumber[4];   //컴퓨터가 선택한 초성 번호
+    TCHAR comch[4];     //컴퓨터가 선택한 초성
+    TCHAR userStr[5];        //사용자가 입력한 문자열
+    TCHAR userch[4];        //사용자가 입력한 초성
+    int userNumber[4];      //사용자가 입력한 초성 번호
+
+    // 난이도 선택: 1글자~4글자의 초성
+    _tprintf(_T("난이도를 선택하세요(1~4) : "));
+    _tscanf(_T("%d"), &level);
+    ClearLineFromReadBuffer();
+
+    // 난이도 별로 초성 랜덤 세팅
+    for(int i=0;i<level;i++){
+        randi = rand() % chCount;
+        comch[i] = unich[randi];
+        comNumber[i] = randi;
+    }
+
+    // 초성 출력
+    _tprintf(_T("초성 :"));
+    for(int i=0; i<level; i++){
+        _tprintf(_T("%c"), comch[i]);
+    }
+    _tprintf(_T("\n"));
+
+
+    // 사용자에게 입력받기. 
+    _tprintf(_T("입력 :"));
+    _fgetts(userStr, sizeof(userStr), stdin);
+    // 공백 입력할 시 공백 제거 
+    // ClearSpace(userStr, sizeof(userStr));
+
+    
+    //사용자가 입력한 문자열의 초성 찾기
+    for(int i=0;i<level;i++){
+        for(int j=0;j<28;j+=2){
+            if(userStr[i] >= uniStr[j] && userStr[i] <= uniStr[j+1]){
+                userch[i] = unich[j/2];
+                userNumber[i] = j/2;
+                break;
+            }
+
+            if(j == 26){
+                _tprintf(_T("잘못입력하셨습니다. \n"));
+                _tprintf(_T("게임 종료."));
+                return -1;
+            }
+        }
+    }
+    
+    //사용자가 입력한 문자열의 초성 출력
+    _tprintf(_T("당신이 입력한 초성은 "));
+    for(int i=0; i<level; i++){
+        _tprintf(_T("%c"), userch[i]);
+    }
+    _tprintf(_T("입니다.\n"));
+
+    //초성 일치 여부 확인
+    for(int i=0; i<level; i++){
+        if(userNumber[i] != comNumber[i]){
+            _tprintf(_T("틀렸습니다.\n"));
+            return 0;
+        }
+    }
+    _tprintf(_T("성공!\n"));
+    return 0;
+
+    // 한글에 대응하는 숫자 찾아보기 
+    // https://icodebroker.tistory.com/7077 참고하여 한글 MBCS정리
+    //한글 한글자당 3byte
+    //입력된 글자가 특정 범위에 속하면 해당 초성임을 판단
+
+#endif
+}
