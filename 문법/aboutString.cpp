@@ -91,9 +91,7 @@ int main(void){
     // TCHAR chp1[] =_T("abcd");     //대체
     // LPCTSTR chp1 = _T("abcd");     //대체
     LPTSTR chp1 = (char*)("abcd");     //대체 (WBCS는 불가)
-    _tscanf(_T("%s"), chp1);
-    ClearLineFromReadBuffer();
-    _tprintf(_T("%s \n"), chp1);
+    //? _tscanf(_T("%s"), chp1);    왜 char* 자료형인 문자열을 scanf로 받을때 오류가 나는지?    
     //*한국어 한글자씩 출력하는 방법 : MBCS인 경우 한글자당 2칸 or 3칸 연속으로, WBCS인 경우 한글자당 1칸 출력해야 한다 
     _tprintf(_T("%c%c \n"), chp1[0], chp1[1]);
 
@@ -206,7 +204,7 @@ int main(void){
 
     //*입력함수5 : char * _fgetts(char * s, int n, FILE * stream);
     //최대 (n-1)byte만 저장 (\0d도 저장하므로 -1), char[지정수]가능, char* 불가
-    //*공백 입력해도 계속 저장, \n입력한 경우 \n까지 저장 (ClearLineFromReadBuffer(); 넣지말것)
+    //*공백 입력해도 계속 저장, \n입력한 경우 \n까지 저장 (ClearLineFromReadBuffer(); 넣으면 안된다!!)
     //(stdin : 키보드 버퍼에서 받아옴) (파일글 받아오기 가능)
     _tprintf(_T("입력함수5 : char * _fgetts(char * s, int n, FILE * stream); \n"));
     TCHAR gch4[100];
@@ -229,7 +227,7 @@ int main(void){
 
 
     //*************************** 기타 함수 ***************************************
-    //* 메모리 할당한 크기 : sizeof()
+    //* 메모리 할당한 byte 크기 확인하는 연산자 : sizeof
 
 
     //* '\0' 이전까지의 문자열 길이 : strlen()
