@@ -77,7 +77,8 @@ int main(void)
                         printf("true\n");                    // 만든 뒤 FLT_EPSILON보다 작거나 같은지 판단
                     else                                     // 오차가 머신 엡실론 이하라면 같은 값으로 봄
                         printf("false\n");                   // 값의 차이가 머신 엡실론보다 작거나 같으므로 true
-                    
+
+
     //* 문제 : unsigned와 signed를 비교하는 경우
     
 
