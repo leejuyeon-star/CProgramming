@@ -63,7 +63,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <tchar.h>
-#include <locale.h>		//*WBCS 한글 사용시 필요	
+#include <locale.h>		//*WBCS 한글 사용시 필요
 
 void ClearLineFromReadBuffer(void){
     while(getchar() != '\n');
@@ -74,7 +74,7 @@ int main(void){
 	_wsetlocale(LC_ALL, L"korean");	
 #endif
 
-    //******** char (TCHAR)************
+    // ******** char (TCHAR)************
     //* 1byte만 저장 가능
     _tprintf(_T("******* char ******* \n"));
     TCHAR ch1 = 'a';
@@ -84,32 +84,40 @@ int main(void){
 
 
     //********* char* (LPTSTR)**********
-    //* 여러byte 저장가능, 배열 크기 정하지 않음, 1byte단위로 수정 불가
+    //* 장점 : 여러byte 저장가능, 배열 크기 정하지 않음, 1byte단위로 수정 불가
     _tprintf(_T("****** char* ****** \n"));
     // LPTSTR chp1 = malloc(sizeof(TCHAR) * 10);        //?불가
     // LPTSTR chp1 =_T("abcd");     //!불가. 상수문자열을 상수가 아닌 변수에 넣을 수 없기 때문
     // TCHAR chp1[] =_T("abcd");     //대체
     // LPCTSTR chp1 = _T("abcd");     //대체
     LPTSTR chp1 = (char*)("abcd");     //대체 (WBCS는 불가)
+    chp1 = (char*)("abce");     //대체 (WBCS는 불가)
     //? _tscanf(_T("%s"), chp1);    왜 char* 자료형인 문자열을 scanf로 받을때 오류가 나는지?    
+    //? 왜 동적 할당하면 scanf로 받을 수 있는건지?
     //*한국어 한글자씩 출력하는 방법 : MBCS인 경우 한글자당 2칸 or 3칸 연속으로, WBCS인 경우 한글자당 1칸 출력해야 한다 
-    _tprintf(_T("%c%c \n"), chp1[0], chp1[1]);
+    _tprintf(_T("%c%c \n"), chp1[0], chp1[1]);  //== *(chp1), *(chp1+1)
+    // _tprintf(_T("%s \n"), *(chp1+1));      //문자열 출력시 변수+i로는 가능
 
     _tprintf(_T("\n"));
     //*******************************
 
+
+
+
     //************** char [] ***********************
-    //* 여러byte 저장 가능, 1byte단위로 수정 가능
     _tprintf(_T("****** char [] : **********\n"));
-    //* 선언, 정의하는 경우
+    //* 장점 : 여러byte 저장 가능, 1byte단위로 수정 가능
+    //* 선언, 정의하는 경우 : 배열 크기 생략가능
     TCHAR str1[] = _T("가나다라마 \n");
     _tprintf(_T("%s \n"), str1);
 
-    //* 선언만 하는 경우 
-    //* 배열 크기 필수로 지정해야 함, 배열크기는 (저장할 문자열의 byte)+1
+    //* 선언과 정의 따로 하는 경우 : 배열 크기 필수로 지정해야 함, 배열크기는 (저장할 문자열의 byte)+1
+    // *    - 입력받는 함수 사용하여 저장하는 경우 
     TCHAR str2[4];
     _fgetts(str2, sizeof(str2), stdin);
     _tprintf(_T("%s \n"), str2);
+
+    //*     - 상수를 저장하는 경우 : memcpy() 사용해야 함
     //***********************************************
 
 
@@ -162,6 +170,7 @@ int main(void){
     //* int fflush(FILE * stream);
     //* 출력버퍼를 비움으로써 버퍼에 남아있던 것을 모두 출력함
     fflush(stdout);
+
 
 
     //***************************입력버퍼에 입력하는 함수****************************
