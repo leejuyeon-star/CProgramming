@@ -1,0 +1,60 @@
+/*
+    - 구조체에 대하여
+*/
+
+#include <windows.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <tchar.h>
+
+
+//? 문제 :어떤 경우에 구조체를 정의함과 동시에 변수를 선언해야 할까?
+// 예시 : (구조체를 정의한 동시에 구조체 변수 pos1, pos2를 선언한 경우)
+//     struct point
+//     {
+//         int posx;
+//         int posy;
+//     } pos1, pos2;
+// 해결 :
+
+
+
+//* 문제 : 구조체 최적화하는 방법 (속도, 용량 면에서) 
+// 성질 : - Data Structure Padding (컴파일러가 구조체 크기를 결정할 때 구조체 내의 가장 크기가 큰 자료형의 배수로 결정한다)
+//        - 구조체 내의 자료형들을 정렬할 때는 가장 크기가 큰 자료형 단위로 데이터를 정렬한다
+//      예시
+        // typedef struct point
+        // {
+        //     int data1;
+        //     char data2;
+        //     char data3;
+        // } _point;
+
+        // int main()
+        // {
+        //     _point po;
+        //     printf("%d", sizeof(_point));   //4+2+2가 아닌 4+4로 나온다
+        // }
+// 해결 : 구조체 안의 자료형 정렬하기(Data Structure Padding에 의한 비는 메모리가 없도록 하여 자료형 크기 줄인다)
+//          (참고 https://wotjdaka.tistory.com/entry/20140409-%EA%B5%AC%EC%A1%B0%EC%B2%B4-%ED%9A%A8%EC%9C%A8%EB%86%92%EC%9D%B4%EA%B8%B0)
+//      안좋은 예
+        // typedef struct point
+        // {
+        //     int data1;
+        //     char data2;
+        //     int data3;
+        //      char data4;
+        // } _point;
+
+//      좋은 예
+        // typedef struct point
+        // {
+        //     int data1;
+        //     int data3;
+        //     char data2;
+        //     char data4;
+        // } _point;
+//
+
+
+//* 문제 : 너무 많은 변수 선언시 스택 오버플로우 발생
