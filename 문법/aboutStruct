@@ -1,5 +1,5 @@
 /*
-    - 구조체에 대하여
+    - 구조체, 공용체에 대하여
 */
 
 #include <windows.h>
@@ -20,7 +20,7 @@
 
 
 //* 문제 : 구조체 최적화하는 방법 (속도, 용량 면에서) 
-// 성질 : - Data Structure Padding (컴파일러가 구조체 크기를 결정할 때 구조체 내의 가장 크기가 큰 자료형의 배수로 결정한다)
+//* 성질 : - Data Structure Padding (컴파일러가 구조체 크기를 결정할 때 구조체 내의 가장 크기가 큰 자료형의 배수로 결정한다)
 //        - 구조체 내의 자료형들을 정렬할 때는 가장 크기가 큰 자료형 단위로 데이터를 정렬한다
 //      예시
         // typedef struct point
@@ -58,3 +58,50 @@
 
 
 //* 문제 : 너무 많은 변수 선언시 스택 오버플로우 발생
+
+
+//* union (공용체)
+//* 기능 : 하나의 메모리 공간을 둘 이상의 방식으로 접근할 수 있음
+//* 성질 : 공용체 안 자료형 중 크기가 가장 큰 자료형의 메모리만 할당되어 모든 변수가 이 메모리를 공유한다 
+//* 쓰임 : 여러 멤버에 동시에 접근하지 않는 경우 같은 메모리 레이아웃에 멤버를 모아둘 때 사용
+        //예시
+        // typedef union _union
+        // {
+        //         char sh[4];
+        //         unsigned int a;
+        // } _Union;
+
+
+        // int main(void)
+        // {
+        //         _Union uni;
+        //         uni.a = 0x41424344;     //리틀 엔디안이므로 메모리 번호 높은 순부터  저장됨
+        //         for (int i=0; i<4; i++)
+        //                 printf("%c \n", uni.sh[i]);            
+        // }
+
+//* enum (열거형)
+//* 쓰임 : 상수를 모아서 관리할때 사용
+        //예시
+        // enum color {RED, BLUE, GREEN};
+        // int main()
+        // {
+                
+        //         enum color col;
+        //         // int col;     //이렇게도 가능
+        //         for(col=0; col<3; col++){
+        //                 switch(col)
+        //                 {
+        //                 case RED :
+        //                         printf("red \n");
+        //                         break;
+        //                 case BLUE :
+        //                         printf("blue \n");
+        //                         break;
+        //                 case GREEN :
+        //                         printf("green");
+        //                         break;
+        //                 }
+        //         }
+                
+        // }
