@@ -85,12 +85,13 @@ int main(void){
     //********* (const) char* [LPCTSTR]**********
     //* 특징 : - 저장할 문자열은 static data의 rodata(read only data)에 저장되고 (const) char*는 문자열의 시작주소만 저장됨
     //*        - 상수 문자열을 저장하기 때문에 char* 대신 const char*로 표현하는것이 적절함 
+    //*        - 모든 상수 문자열은 저장되면 char* 형태로 주소값을 반환함. (따라서 상수 문자열을 인자로 받을 시 매개변수 선언을 char* 형태로 해야 함)
     //* 장점 : 여러byte 저장가능, 배열 크기 정하지 않아도 됨
     //* 단점 : 문자열 수정 불가(동적할당하면 수정 가능)
     _tprintf(_T("****** char* ****** \n"));
     LPCTSTR chp1     = _T("abcd");     //대체 (CONST이므로 한번만 정의 가능)
     // LPTSTR chp2   = _T("abcd");     //경고뜸. 상수문자열을 const가 아닌 변수에 넣었기 때문 (warning: ISO C++ forbids converting a string constant to 'LPTSTR {aka char*}')
-    LPTSTR chp3      = (LPTSTR)("abcd");     //동적 할당
+    LPTSTR chp3      = (LPTSTR)("abcd");     //?동적 할당
     LPTSTR chp4      = (LPTSTR)malloc(sizeof(TCHAR)*30);     //동적 할당 (heap에 저장) (사용예 https://zoosso.tistory.com/801)
     //한국어 한글자씩 출력하는 방법 : MBCS인 경우 한글자당 2칸 or 3칸 연속으로, WBCS인 경우 한글자당 1칸 출력해야 한다 
     _tprintf(_T("%c%c \n"), chp1[0], chp1[1]);  //== *(chp1), *(chp1+1)
@@ -120,6 +121,33 @@ int main(void){
 
     //*     - 상수 문자열을 저장하는 경우 : memcpy() 사용해야 함
     //***********************************************
+
+
+
+
+
+    //********************* char* [] ****************************
+    _tprintf(_T("****** char* [] : **********\n"));
+    //* 형식 : 자료형 선언시 저장할 변수의 자료형에 맞는 자료형으로 선언해야 함
+    //* 기능 : 
+    // 예시1 - 숫자 저장시
+    int arrays = 12;
+    int arrayss = 1;
+    int * dy [] = {&arrays, &arrayss};
+    _tprintf(_T("%d \n"), *dy[0]);
+
+    //예시2 - 문자열 저장시  (모든 상수 문자열은 저장되면 char* 형태로 주소값을 반환하는 것을 이용)
+    char * strArr[3] = {"abcsd", "defdf", "ghigkl"};
+    _tprintf(_T("%s \n"), strArr[1]);
+    
+
+
+
+
+
+
+    //************************************************************
+
 
 
 
